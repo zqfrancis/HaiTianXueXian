@@ -123,19 +123,19 @@
         background: var(--teal-deep);
         color: #eef8f7;
         border-radius: 14px;
-        padding: 18px 20px;
+        padding: 22px 24px;
         display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: center;
         box-shadow: var(--shadow);
       }
       @media (prefers-color-scheme: dark) { .verdict { background: #0d3242; } }
       .verdict .v-label { font-size: 12px; letter-spacing: .22em; opacity: .75; font-weight: 700; }
-      .verdict .v-main { font-size: clamp(21px, 3.4vw, 28px); font-weight: 900; line-height: 1.3; margin-top: 2px; }
+      .verdict .v-main { font-size: clamp(30px, 6vw, 42px); font-weight: 900; line-height: 1.25; margin-top: 2px; }
       .verdict .v-main .hl { color: #ffb066; }
-      .verdict .v-why { font-size: 14px; opacity: .92; max-width: 560px; }
+      .verdict .v-why { font-size: 13.5px; opacity: .8; max-width: 480px; }
       .verdict .v-stats { display: flex; gap: 22px; margin-left: auto; }
       .verdict .v-stats .s { text-align: right; }
-      .verdict .v-stats .s b { display: block; font-size: 24px; font-weight: 800; line-height: 1.15; }
-      .verdict .v-stats .s span { font-size: 12px; opacity: .8; }
+      .verdict .v-stats .s b { display: block; font-size: 32px; font-weight: 800; line-height: 1.1; }
+      .verdict .v-stats .s span { font-size: 11px; opacity: .75; }
 
       .alert-strip {
         margin-top: 12px;
@@ -152,9 +152,9 @@
       }
 
       /* ---------- Sections ---------- */
-      section { margin-top: 34px; }
+      section { margin-top: 44px; }
       .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
-      .sec-head h2 { margin: 0; font-size: 21px; font-weight: 900; letter-spacing: .04em; }
+      .sec-head h2 { margin: 0; font-size: 24px; font-weight: 900; letter-spacing: .04em; }
       .sec-head .en { font-size: 11px; letter-spacing: .18em; color: var(--ink-2); font-weight: 700; }
       .sec-head .rule { flex: 1; height: 1px; background: var(--line); align-self: center; }
       .sec-head .note { font-size: 12.5px; color: var(--ink-2); }
@@ -172,8 +172,12 @@
       }
       .card.selected { outline: 2px solid var(--teal); outline-offset: 1px; }
       .card .top { display: flex; align-items: flex-start; gap: 8px; }
-      .card .name { font-size: 19px; font-weight: 900; line-height: 1.25; }
+      .card .name { font-size: 20px; font-weight: 900; line-height: 1.25; }
       .card .en-name { font-size: 11.5px; color: var(--ink-2); letter-spacing: .05em; font-weight: 600; }
+      .card .hero { display: flex; align-items: baseline; gap: 4px 10px; flex-wrap: wrap; }
+      .card .hero b { font-size: 30px; font-weight: 900; line-height: 1.1; }
+      .card .hero b small { font-size: 13px; font-weight: 700; color: var(--ink-2); }
+      .card .hero span { font-size: 12.5px; color: var(--ink-2); font-weight: 600; }
       .pill {
         flex: none; margin-left: auto; font-size: 12px; font-weight: 800;
         border-radius: 999px; padding: 3px 10px; white-space: nowrap;
@@ -200,7 +204,7 @@
       .week .d .v { font-size: 11px; font-weight: 700; margin-top: 3px; }
       .week .d .w { font-size: 10.5px; color: var(--ink-2); }
       .week .d .t { font-size: 10.5px; color: var(--ink-2); white-space: nowrap; }
-      .card .foot { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; border-top: 1px dashed var(--line); padding-top: 9px; font-size: 13px; color: var(--ink-2); }
+      .card .foot { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; border-top: 1px dashed var(--line); padding-top: 9px; font-size: 12.5px; color: var(--ink-2); }
       .card .foot .drive b { color: var(--ink); }
       .card .foot a { font-weight: 700; text-decoration: none; margin-left: auto; padding: 6px 2px; }
       .card .foot a:hover { text-decoration: underline; }
@@ -216,7 +220,7 @@
         background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
         padding: 18px; box-shadow: var(--shadow);
       }
-      .detail h3 { margin: 0 0 2px; font-size: 18px; font-weight: 900; }
+      .detail h3 { margin: 0 0 2px; font-size: 20px; font-weight: 900; }
       .detail .dsub { color: var(--ink-2); font-size: 13px; margin-bottom: 12px; }
       .hourly { overflow-x: auto; padding-bottom: 4px; }
       .hourly svg { display: block; min-width: 640px; width: 100%; height: auto; }
@@ -228,6 +232,8 @@
       .clothes .box li { margin: 2px 0; }
       .feels { font-size: 14px; margin-top: 12px; }
       .feels b { font-size: 17px; }
+      .week-title { font-size: 13px; font-weight: 800; margin: 18px 0 8px; }
+      .detail .snowline { margin-top: 12px; }
 
       /* ---------- Roads ---------- */
       .roads { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
@@ -264,11 +270,16 @@
       @media (max-width: 900px) { .pack-grid { grid-template-columns: repeat(2, 1fr); } }
       @media (max-width: 600px) { .pack-grid { grid-template-columns: 1fr; } }
       .pack-group { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 13px 15px; box-shadow: var(--shadow); }
-      .pack-group h3 { margin: 0 0 6px; font-size: 15px; font-weight: 900; }
+      .pack-group summary { display: flex; align-items: center; gap: 8px; cursor: pointer; list-style: none; }
+      .pack-group summary::-webkit-details-marker { display: none; }
+      .pack-group summary h3 { margin: 0; font-size: 15px; font-weight: 900; }
+      .pack-group summary .g-count { margin-left: auto; font-size: 13px; font-weight: 800; color: var(--teal); white-space: nowrap; }
+      .pack-group summary::after { content: "▾"; color: var(--ink-2); font-size: 12px; }
+      .pack-group[open] summary::after { content: "▴"; }
       .pack-group label {
         display: flex; align-items: center; gap: 10px;
-        padding: 9px 4px; min-height: 44px; cursor: pointer;
-        border-bottom: 1px dashed var(--line); font-size: 14.5px;
+        padding: 8px 4px; min-height: 40px; cursor: pointer;
+        border-bottom: 1px dashed var(--line); font-size: 13.5px;
       }
       .pack-group label:last-child { border-bottom: none; }
       .pack-group input[type="checkbox"] { width: 20px; height: 20px; flex: none; accent-color: var(--teal); }
@@ -307,7 +318,7 @@
           <h2 id="h-resorts">六家雪场</h2>
           <span class="en">RESORTS</span>
           <span class="rule"></span>
-          <span class="note">点任意一张卡，下面看逐小时天气和穿衣建议</span>
+          <span class="note">点一张卡，下面看逐小时、未来 7 天和穿衣建议</span>
         </div>
         <div class="grid" id="resortGrid"></div>
       </section>
@@ -331,7 +342,7 @@
         <div class="roads" id="roadGrid"></div>
         <div class="tire">
           <span class="t-title">冬季轮胎规定</span>
-          <p>每年 <b>10 月 1 日 – 次年 4 月 30 日</b>，BC 省指定高速（海天公路、Hwy 1 上段、Hwy 3 等）强制冬季胎：带 <b>M+S 或三峰雪花标志</b>、胎纹深度 ≥ 3.5&nbsp;mm。Cypress Bowl Rd 与 Mt Seymour Rd 山脚在雪天会设检查点，没合格轮胎会被劝返。个别路段执行期至 3 月 31 日，以路边标志为准。</p>
+          <p>每年 <b>10 月 1 日 – 次年 4 月 30 日</b>，BC 指定高速强制冬季胎（M+S 或三峰雪花标志、胎纹 ≥ 3.5 mm），雪天山脚有检查点。</p>
           <a href="https://www.drivebc.ca/" target="_blank" rel="noopener" style="font-weight:700;">DriveBC 实时路况 ↗</a>
         </div>
       </section>
@@ -400,13 +411,13 @@ var RESORTS = [
 
 var ROADS = [
   { name:"海天公路 Hwy 99", route:"温哥华 → Squamish → Whistler", st:"warn", stText:"今日有全封闭时段",
-    body:"<b>11 月 17–18 日 8:00–16:00</b>，Horseshoe Bay 附近 Exit 2 至 Pasco Rd 移除 2023 年山火危树，全封闭施工，绕行 Horseshoe Bay Drive（DriveBC 事件 RIDE-106118）。16:00 后恢复通行；去 Whistler 尽量避开白天这段，或预留绕行时间。",
+    body:"<b>11 月 17–18 日 8:00–16:00</b>，Horseshoe Bay 附近全封闭移除危树，绕行 Horseshoe Bay Drive。16:00 后恢复通行。",
     link:"https://deeparrival.com/news/highway-99-west-vancouver-closed-tree-removal-november-17-18-2026/", linkText:"封闭详情 ↗" },
   { name:"Cypress Bowl Road", route:"Hwy 1 上段 8 号出口上山 · 约 12 km", st:"ok", stText:"季前 · 无事件报告",
-    body:"盘山路弯多坡陡，雪天山脚设冬季胎检查点。山上分 Downhill 与 Nordic（Hollyburn）两个区域，别走错停车场。夜场日子下山车流集中，留够耐心。",
+    body:"盘山路弯多坡陡，雪天山脚有冬季胎检查点。Downhill 与 Nordic 停车场分开，别走错。",
     link:"http://www.cypressmountain.com/downhill-conditions-and-cams", linkText:"Cypress 路况与摄像头 ↗" },
   { name:"Mt Seymour Road", route:"Mt Seymour Pkwy 上山 · 约 13 km", st:"ok", stText:"季前 · 无事件报告",
-    body:"后半段连续发夹弯，气温常比山下低 5°C 以上，路面结冰点比市区早。冬季周末停车场一位难求，雪场有停车预约安排就先约；暴风雪时山路可能临时管制。",
+    body:"后半段连续发夹弯，气温比山下低 5°C 以上。周末停车场紧张，先约停车位。",
     link:"https://mtseymour.ca/the-mountain/todays-conditions-hours", linkText:"Seymour 当日状况 ↗" }
 ];
 
@@ -469,7 +480,7 @@ function renderVerdict(){
     var best = scored[0].r, bs = state[best.id];
     html = '<div><div class="v-label">今日推荐 · 按新雪排序</div>'
       + '<div class="v-main">今天去 <span class="hl">'+best.cn+'</span></div>'
-      + '<div class="v-why">24 小时新雪 '+fmt(bs.s24)+' cm、48 小时 '+fmt(bs.s48)+' cm，山上 '+fmt(bs.temp)+'°C、风 '+fmt(bs.wind)+' km/h。出发前看一眼下面的路况和官方雪报。</div></div>'
+      + '<div class="v-why">山上 '+fmt(bs.temp)+'°C、风 '+fmt(bs.wind)+' km/h。出发前看一眼下面的路况。</div></div>'
       + '<div class="v-stats"><div class="s"><b class="num">'+fmt(bs.s24)+'<small style="font-size:13px"> cm</small></b><span>24h 新雪</span></div>'
       + '<div class="s"><b class="num">'+fmt(bs.depth)+'<small style="font-size:13px"> cm</small></b><span>'+bs.depthNote+'</span></div>'
       + '<div class="s"><b class="num">'+fmt(bs.freeze)+'<small style="font-size:13px"> m</small></b><span>雪线高度</span></div></div>';
@@ -478,7 +489,7 @@ function renderVerdict(){
     var first = sorted[0], fs = state[first.id], n = daysUntil(first.openISO);
     html = '<div><div class="v-label">季前巡视 · 还没有雪场开板</div>'
       + '<div class="v-main">最先开板：<span class="hl">'+first.cn+'</span> · 还有 <span class="hl num">'+n+' 天</span></div>'
-      + '<div class="v-why">'+first.cn+' 预计 '+first.openLabel+' 开板，官方雪基已到 39 cm、过去 48 小时新雪 19 cm。其余五家预计 12 月陆续开板，先把装备和打包清单准备好。</div></div>'
+      + '<div class="v-why">其余五家预计 12 月陆续开板，先把装备准备好。</div></div>'
       + '<div class="v-stats"><div class="s"><b class="num">'+fmt(fs.s48)+'<small style="font-size:13px"> cm</small></b><span>48h 新雪 · 惠斯勒</span></div>'
       + '<div class="s"><b class="num">39<small style="font-size:13px"> cm</small></b><span>雪基 · 官方</span></div>'
       + '<div class="s"><b class="num">'+fmt(fs.freeze)+'<small style="font-size:13px"> m</small></b><span>雪线高度</span></div></div>';
@@ -533,16 +544,7 @@ function renderCards(){
     var s = state[r.id];
     return '<button type="button" class="card'+(r.id===selectedId?" selected":"")+'" data-id="'+r.id+'" aria-pressed="'+(r.id===selectedId)+'">'
       + '<span class="top"><span><span class="name">'+r.cn+'</span><br><span class="en-name">'+r.en+'</span></span>'+statusPill(r)+'</span>'
-      + '<span class="stats">'
-      +   '<span class="cell"><b class="num">'+fmt(s.s24)+' <small>cm</small></b><span>24h 新雪</span></span>'
-      +   '<span class="cell"><b class="num">'+fmt(s.s48)+' <small>cm</small></b><span>48h 新雪</span></span>'
-      +   '<span class="cell"><b class="num">'+fmt(s.depth)+' <small>cm</small></b><span>'+s.depthNote+'</span></span>'
-      + '</span>'
-      + '<span class="wxline"><span>山上 <b class="num">'+fmt(s.temp)+'°C</b> '+codeText(s.code)+'</span><span>风 <b class="num">'+fmt(s.wind)+' km/h</b></span><span>今日 <b class="num">'+fmt(s.lo)+'° / '+fmt(s.hi)+'°</b></span></span>'
-      + snowlineHTML(r)
-      + (r.officialStrip ? '<span class="official-strip">'+r.officialStrip+'</span>' : '')
-      + '<span style="font-size:12px;color:var(--ink-2);font-weight:700;">未来 7 天降雪（cm）</span>'
-      + weekHTML(r)
+      + '<span class="hero"><b class="num">'+fmt(s.s24)+' <small>cm · 24h 新雪</small></b><span>48h '+fmt(s.s48)+' cm · '+s.depthNote+' '+fmt(s.depth)+' cm</span></span>'
       + '<span class="foot"><span class="drive">市中心出发 <b>'+r.driveMin+'</b> · '+r.driveKm+' km</span>'
       + '<a href="'+r.official+'" target="_blank" rel="noopener" data-stop="1">官方雪况页 ↗</a></span>'
       + '</button>';
@@ -614,6 +616,9 @@ function renderDetail(){
     '<h3>'+r.cn+' · 未来 24 小时</h3>'
     + '<div class="dsub">'+r.area+' · 数据点海拔 '+r.ele+' m（山腰） · 山上现在 '+fmt(s.temp)+'°C、'+codeText(s.code)+'、风 '+fmt(s.wind)+' km/h</div>'
     + '<div class="hourly">'+hourlySVG(hourlyCache[r.id])+'</div>'
+    + '<div class="week-title">未来 7 天降雪（cm）</div>'
+    + weekHTML(r)
+    + snowlineHTML(r)
     + '<p class="feels">风寒体感 <b class="num">'+fmt(feels)+'°C</b> —— '+c.band.split("·")[1]+'</p>'
     + '<div class="clothes">'
     +   '<div class="box"><h4>大人穿衣</h4><ul>'+c.adult.map(function(x){return "<li>"+x+"</li>";}).join("")+'</ul></div>'
@@ -635,11 +640,11 @@ function renderPack(){
   var total = 0;
   $("#packGrid").innerHTML = PACK.map(function(g, gi){
     total += g.items.length;
-    return '<div class="pack-group"><h3>'+g.title+'</h3>'
+    return '<details class="pack-group"><summary><h3>'+g.title+'</h3><span class="g-count num">0/'+g.items.length+'</span></summary>'
       + g.items.map(function(it, ii){
           return '<label data-g="'+gi+'" data-i="'+ii+'"><input type="checkbox" data-g="'+gi+'" data-i="'+ii+'"><span>'+it+'</span></label>';
         }).join("")
-      + '</div>';
+      + '</details>';
   }).join("");
   $("#packTotal").textContent = total;
   $("#packGrid").querySelectorAll('input[type="checkbox"]').forEach(function(cb){
@@ -655,6 +660,12 @@ function updatePackCount(){
   var done = 0; boxes.forEach(function(b){ if(b.checked) done++; });
   $("#packDone").textContent = done;
   $("#packBar").style.width = (boxes.length ? done/boxes.length*100 : 0) + "%";
+  $("#packGrid").querySelectorAll(".pack-group").forEach(function(g){
+    var bs = g.querySelectorAll('input[type="checkbox"]');
+    var d = 0; bs.forEach(function(b){ if(b.checked) d++; });
+    var c = g.querySelector(".g-count");
+    if(c) c.textContent = d + "/" + bs.length;
+  });
 }
 $("#packReset").addEventListener("click", function(){
   $("#packGrid").querySelectorAll('input[type="checkbox"]').forEach(function(b){
