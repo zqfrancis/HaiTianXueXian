@@ -96,6 +96,7 @@
         text-shadow: 0 2px 14px rgba(4, 26, 36, .45);
       }
       .masthead h1 img {
+        position: static; /* 取消 .masthead img 的 absolute，避免脱离文档流压住副标题 */
         display: block; width: min(200px, 52vw); height: auto;
         border-radius: 14px; box-shadow: 0 4px 18px rgba(4, 26, 36, .5);
       }
