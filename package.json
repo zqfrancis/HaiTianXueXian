@@ -1,0 +1,27 @@
+{
+  "name": "haitianxuexian",
+  "version": "1.0.0",
+  "description": "海天雪线 HaiTianXueXian — 大温滑雪仪表盘（Capacitor 封装，供 App Store / Google Play 上架）",
+  "scripts": {
+    "sync-web": "mkdir -p www && cp index.html logo.jpg privacy.html www/",
+    "sync:ios": "npm run sync-web && npx cap sync ios",
+    "sync:android": "npm run sync-web && npx cap sync android"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zqfrancis/HaiTianXueXian.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zqfrancis/HaiTianXueXian/issues"
+  },
+  "homepage": "https://github.com/zqfrancis/HaiTianXueXian#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/cli": "^8.6.2",
+    "@capacitor/core": "^8.6.2",
+    "@capacitor/ios": "^8.6.2"
+  }
+}

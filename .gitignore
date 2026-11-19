@@ -1,0 +1,22 @@
+# Dependencies (recreated by `npm ci` in CI and locally)
+node_modules/
+
+# Generated web bundle (rebuilt by `npm run sync-web` from index.html + logo.jpg + privacy.html)
+www/
+
+# Native build outputs
+ios/App/build/
+ios/App/DerivedData/
+android/app/build/
+android/.gradle/
+android/local.properties
+
+# macOS / Xcode user state (shared scheme in xcshareddata IS committed)
+*.xcuserdata/
+*.xccheckout
+*.moved-aside
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+.DS_Store
