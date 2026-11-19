@@ -576,10 +576,11 @@ function fcSummary(fc){
   var horizon = fc.dates.length >= 14 ? 14 : 7;
   var sum7 = 0, sum14 = 0, next = -1;
   for(var i=0;i<fc.snow.length;i++){
-    var v = fc.snow[i] || 0;
+    var raw = fc.snow[i] || 0;
+    var v = Math.round(raw * 10) / 10; // 先按显示值四舍五入再加总，合计与表里逐日数字一致
     if(i < 7) sum7 += v;
     sum14 += v;
-    if(next < 0 && v >= 0.5) next = i;
+    if(next < 0 && raw >= 0.5) next = i;
   }
   var nextTxt;
   if(next < 0) nextTxt = "未来 "+horizon+" 天没有明显降雪";
