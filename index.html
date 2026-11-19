@@ -196,14 +196,28 @@
       .snowline .track { position: relative; flex: 1; height: 6px; border-radius: 3px; background: var(--bar-soft); }
       .snowline .track i { position: absolute; top: -3px; width: 2px; height: 12px; background: var(--accent); border-radius: 1px; }
       .snowline .track em { position: absolute; top: 0; left: 0; height: 6px; border-radius: 3px; background: var(--bar); opacity: .45; }
-      .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; align-items: end; }
-      .week .d { text-align: center; }
-      .week .d .barwrap { height: 34px; display: flex; align-items: flex-end; justify-content: center; }
-      .week .d .bar { width: 14px; border-radius: 3px 3px 0 0; background: var(--bar); min-height: 2px; }
-      .week .d .bar.zero { background: var(--bar-soft); }
-      .week .d .v { font-size: 11px; font-weight: 700; margin-top: 3px; }
-      .week .d .w { font-size: 10.5px; color: var(--ink-2); }
-      .week .d .t { font-size: 10.5px; color: var(--ink-2); white-space: nowrap; }
+      /* Snow-Forecast 式预报表：横向滚动，首列（行名）粘住 */
+      .fc-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 18px 0 8px; }
+      .fc-head .week-title { margin: 0; }
+      .fc-toggle { display: inline-flex; gap: 4px; }
+      .fc-toggle button { border: 1px solid var(--line); background: var(--panel); color: var(--ink-2); border-radius: 999px; padding: 4px 12px; font-size: 12.5px; font-weight: 700; cursor: pointer; min-height: 0; }
+      .fc-toggle button.on { background: var(--teal); border-color: var(--teal); color: #fff; }
+      .fc-wrap { overflow-x: auto; padding-bottom: 4px; }
+      table.fc { border-collapse: collapse; min-width: 660px; width: 100%; font-size: 13px; }
+      table.fc th, table.fc td { border-bottom: 1px solid var(--line); padding: 7px 6px; text-align: center; white-space: nowrap; }
+      table.fc th { font-size: 12px; color: var(--ink-2); }
+      table.fc th.today { color: var(--accent); }
+      table.fc td.lab, table.fc th.lab { position: sticky; left: 0; background: var(--panel); text-align: left; font-weight: 700; font-size: 12px; color: var(--ink-2); min-width: 62px; z-index: 1; }
+      table.fc td.snow { font-size: 19px; font-weight: 900; }
+      table.fc td.sn0 { color: var(--ink-2); }
+      table.fc td.sn1 { background: rgba(47,139,163,.12); }
+      table.fc td.sn2 { background: rgba(47,139,163,.25); }
+      table.fc td.sn3 { background: rgba(47,139,163,.45); color: #fff; }
+      table.fc td.sn4 { background: rgba(13,92,110,.75); color: #fff; }
+      table.fc td.sn5 { background: #0d5c6e; color: #fff; }
+      .fc-sum { font-size: 13.5px; margin-top: 10px; }
+      .fc-sum b { color: var(--teal); }
+      .fc-note { font-size: 12.5px; color: var(--ink-2); margin-top: 6px; }
       .card .foot { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; border-top: 1px dashed var(--line); padding-top: 9px; font-size: 12.5px; color: var(--ink-2); }
       .card .foot .drive b { color: var(--ink); }
       .card .foot a { font-weight: 700; text-decoration: none; margin-left: auto; padding: 6px 2px; }
@@ -318,7 +332,7 @@
           <h2 id="h-resorts">六家雪场</h2>
           <span class="en">RESORTS</span>
           <span class="rule"></span>
-          <span class="note">点一张卡，下面看逐小时、未来 7 天和穿衣建议</span>
+          <span class="note">点一张卡，下面看逐小时、未来 14 天和穿衣建议</span>
         </div>
         <div class="grid" id="resortGrid"></div>
       </section>
@@ -436,6 +450,21 @@ var selectedId = "whistler";
 var hourlyCache = {};     // id -> {times, temp, snow, wind}
 RESORTS.forEach(function(r){ state[r.id] = Object.assign({}, r.snap); });
 
+/* 快照兜底的 7 天预报（实时拉不到时用；日期从今天起排，数值是 11-18 快照） */
+function snapFc(r){
+  var snap = r.snap, fc = { dates:[], snow:[], hi:[], lo:[], wind:[], windDir:[], freeze:[], code:[], live:false };
+  var start = new Date();
+  for(var i=0;i<7;i++){
+    var d = new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
+    fc.dates.push(d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2));
+    fc.snow.push((snap.daily && snap.daily[i]) || 0);
+    fc.hi.push(snap.hi); fc.lo.push(snap.lo); fc.wind.push(snap.wind);
+    fc.windDir.push(null); fc.freeze.push(snap.freeze); fc.code.push(null);
+  }
+  return fc;
+}
+RESORTS.forEach(function(r){ state[r.id].fc = snapFc(r); });
+
 /* ============ Helpers ============ */
 function $(s){ return document.querySelector(s); }
 function fmt(n, d){ if(n === null || n === undefined || isNaN(n)) return "—"; return Number(n).toFixed(d === undefined ? 0 : d); }
@@ -513,20 +542,86 @@ function statusPill(r){
   if(n <= 7) return '<span class="pill soon">预计 '+r.openLabel+' 开板 · 还有 '+n+' 天</span>';
   return '<span class="pill pre">预计 '+r.openLabel+' 开板</span>';
 }
-function weekHTML(r){
-  var s = state[r.id];
-  var daily = s.daily || [];
-  var max = Math.max.apply(null, daily.concat([2]));
-  var start = new Date(); var out = "";
-  for(var i=0;i<7;i++){
-    var d = new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
-    var v = daily[i] || 0;
-    var h = Math.max(2, Math.round(v / max * 32));
-    out += '<div class="d"><div class="barwrap"><div class="bar'+(v>0?"":" zero")+'" style="height:'+h+'px"></div></div>'
-      + '<div class="v num">'+(v>=0.05?fmt(v,1):"0")+'</div>'
-      + '<div class="w">周'+WEEK_CN[d.getDay()]+'</div></div>';
+/* ============ Snow-Forecast 式 7/14 天预报表 ============ */
+var fcDays = 7; // 7 天 / 14 天切换（默认 7 天）
+function setFcDays(n){ fcDays = n; renderDetail(); }
+function codeEmoji(c){
+  if(c === null || c === undefined) return "";
+  if(c === 0) return "☀️";
+  if(c === 1 || c === 2) return "⛅";
+  if(c === 3) return "☁️";
+  if(c === 45 || c === 48) return "🌫️";
+  if(c >= 51 && c <= 57) return "🌧️";
+  if(c >= 61 && c <= 67) return "🌧️";
+  if(c >= 71 && c <= 77) return "❄️";
+  if(c >= 80 && c <= 82) return "🌧️";
+  if(c === 85 || c === 86) return "❄️";
+  if(c >= 95) return "⛈️";
+  return "";
+}
+function windCompass(deg){
+  if(deg === null || deg === undefined || isNaN(deg)) return "—";
+  var names = ["北风","东北风","东风","东南风","南风","西南风","西风","西北风"];
+  return names[Math.round(deg / 45) % 8];
+}
+function snowClass(v){
+  if(!v || v < 0.05) return "sn0";
+  if(v < 1) return "sn1";
+  if(v < 5) return "sn2";
+  if(v < 10) return "sn3";
+  if(v < 20) return "sn4";
+  return "sn5";
+}
+function fcSummary(fc){
+  var horizon = fc.dates.length >= 14 ? 14 : 7;
+  var sum7 = 0, sum14 = 0, next = -1;
+  for(var i=0;i<fc.snow.length;i++){
+    var v = fc.snow[i] || 0;
+    if(i < 7) sum7 += v;
+    sum14 += v;
+    if(next < 0 && v >= 0.5) next = i;
   }
-  return '<div class="week" role="img" aria-label="未来 7 天逐日降雪（厘米）">'+out+'</div>';
+  var nextTxt;
+  if(next < 0) nextTxt = "未来 "+horizon+" 天没有明显降雪";
+  else {
+    var d = new Date(fc.dates[next]+"T00:00:00");
+    var when = next === 0 ? "今天" : ("周"+WEEK_CN[d.getDay()]+" "+(d.getMonth()+1)+"/"+d.getDate());
+    nextTxt = "下场雪："+when+"，约 "+fmt(fc.snow[next],1)+" cm";
+  }
+  return { sum7: sum7, sum14: sum14, nextTxt: nextTxt };
+}
+function forecastTableHTML(r){
+  var fc = state[r.id].fc;
+  if(!fc || !fc.dates.length) return "";
+  var n = Math.min(fcDays, fc.dates.length);
+  var sum = fcSummary(fc);
+  var head = '<tr><th class="lab">日期</th>';
+  for(var i=0;i<n;i++){
+    var d = new Date(fc.dates[i]+"T00:00:00");
+    head += '<th class="'+(i===0?"today":"")+'">'+(i===0?"今天":("周"+WEEK_CN[d.getDay()]))+'<br>'+(d.getMonth()+1)+"/"+d.getDate()+'</th>';
+  }
+  head += '</tr>';
+  var cond = '<tr><td class="lab">天气</td>';
+  var snow = '<tr><td class="lab">新雪 cm</td>';
+  var temp = '<tr><td class="lab">气温 °C</td>';
+  var wind = '<tr><td class="lab">风</td>';
+  var frz = '<tr><td class="lab">雪线 m</td>';
+  for(var j=0;j<n;j++){
+    var v = fc.snow[j] || 0;
+    cond += '<td>'+(codeEmoji(fc.code[j]) || "—")+'<br><span style="font-size:11px;color:var(--ink-2)">'+codeText(fc.code[j])+'</span></td>';
+    snow += '<td class="snow num '+snowClass(v)+'">'+(v >= 0.05 ? fmt(v,1) : "—")+'</td>';
+    temp += '<td class="num">'+fmt(fc.hi[j])+'° / '+fmt(fc.lo[j])+'°</td>';
+    wind += '<td>'+windCompass(fc.windDir[j])+'<br><span class="num">'+fmt(fc.wind[j])+' km/h</span></td>';
+    frz += '<td class="num">'+fmt(fc.freeze[j])+'</td>';
+  }
+  cond += '</tr>'; snow += '</tr>'; temp += '</tr>'; wind += '</tr>'; frz += '</tr>';
+  var html = '<div class="fc-head"><span class="week-title">未来 '+(n===14?"14":"7")+' 天降雪预报</span>'
+    + '<span class="fc-toggle" role="group" aria-label="预报天数"><button type="button" class="'+(fcDays===7?"on":"")+'" onclick="setFcDays(7)">7 天</button>'
+    + '<button type="button" class="'+(fcDays===14?"on":"")+'" onclick="setFcDays(14)">14 天</button></span></div>'
+    + '<div class="fc-wrap"><table class="fc" aria-label="未来'+n+'天逐日降雪预报">'+head+cond+snow+temp+wind+frz+'</table></div>'
+    + '<p class="fc-sum">❄️ '+sum.nextTxt+'　·　7 天累计 <b class="num">'+fmt(sum.sum7,1)+' cm</b>'+(fc.dates.length >= 14 ? '　·　14 天累计 <b class="num">'+fmt(sum.sum14,1)+' cm</b>' : '')+'</p>';
+  if(!fc.live) html += '<p class="fc-note">实时数据未拉到，显示 11 月 18 日快照（仅 7 天）；14 天预报需要实时数据，请检查网络后点「↻ 刷新雪况」。</p>';
+  return html;
 }
 function snowlineHTML(r){
   var s = state[r.id];
@@ -614,11 +709,11 @@ function renderDetail(){
   var feels = windChill(s.temp, s.wind);
   var c = clothesFor(feels);
   $("#detailPanel").innerHTML =
-    '<h3>'+r.cn+' · 未来 24 小时</h3>'
+    '<h3>'+r.cn+' · 雪况预报</h3>'
     + '<div class="dsub">'+r.area+' · 数据点海拔 '+r.ele+' m（山腰） · 山上现在 '+fmt(s.temp)+'°C、'+codeText(s.code)+'、风 '+fmt(s.wind)+' km/h</div>'
+    + '<div class="week-title">未来 24 小时</div>'
     + '<div class="hourly">'+hourlySVG(hourlyCache[r.id])+'</div>'
-    + '<div class="week-title">未来 7 天降雪（cm）</div>'
-    + weekHTML(r)
+    + forecastTableHTML(r)
     + snowlineHTML(r)
     + '<p class="feels">风寒体感 <b class="num">'+fmt(feels)+'°C</b> —— '+c.band.split("·")[1]+'</p>'
     + '<div class="clothes">'
@@ -680,8 +775,8 @@ function fetchResort(r){
   var url = "https://api.open-meteo.com/v1/forecast?latitude="+r.lat+"&longitude="+r.lon+"&elevation="+r.ele
     + "&current=temperature_2m,wind_speed_10m,weather_code"
     + "&hourly=temperature_2m,snowfall,snow_depth,freezing_level_height,wind_speed_10m"
-    + "&daily=snowfall_sum,temperature_2m_max,temperature_2m_min"
-    + "&past_days=3&forecast_days=8&timezone=America%2FVancouver";
+    + "&daily=snowfall_sum,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_direction_10m_dominant,precipitation_sum,weather_code"
+    + "&past_days=3&forecast_days=15&timezone=America%2FVancouver";
   return fetch(url).then(function(res){ if(!res.ok) throw new Error("http "+res.status); return res.json(); })
   .then(function(d){
     var s = state[r.id];
@@ -707,7 +802,26 @@ function fetchResort(r){
     if(ti >= 0){
       s.hi = Math.round(dl.temperature_2m_max[ti]);
       s.lo = Math.round(dl.temperature_2m_min[ti]);
-      s.daily = dl.snowfall_sum.slice(ti, ti+7);
+      s.daily = dl.snowfall_sum.slice(ti, ti+14);
+      // 每日雪线：取当天逐小时 freezing_level_height 的最大值（越高越不利于落雪）
+      var freezeByDay = {};
+      for(var k=0;k<h.time.length;k++){
+        var dk = h.time[k].slice(0,10), fv = h.freezing_level_height[k];
+        if(fv !== null && fv !== undefined && (freezeByDay[dk] === undefined || fv > freezeByDay[dk])) freezeByDay[dk] = fv;
+      }
+      var fc = { dates:[], snow:[], hi:[], lo:[], wind:[], windDir:[], freeze:[], code:[], live:true };
+      for(var j=ti;j<Math.min(ti+14, dl.time.length);j++){
+        fc.dates.push(dl.time[j]);
+        fc.snow.push(dl.snowfall_sum[j]||0);
+        fc.hi.push(Math.round(dl.temperature_2m_max[j]));
+        fc.lo.push(Math.round(dl.temperature_2m_min[j]));
+        fc.wind.push(Math.round(dl.wind_speed_10m_max[j]));
+        fc.windDir.push(dl.wind_direction_10m_dominant[j]);
+        var fz = freezeByDay[dl.time[j]];
+        fc.freeze.push(fz === undefined ? null : Math.round(fz));
+        fc.code.push(dl.weather_code[j]);
+      }
+      s.fc = fc;
     }
     return true;
   });
