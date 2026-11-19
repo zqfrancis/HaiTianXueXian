@@ -1,0 +1,52 @@
+# 海天雪线 iOS 构建（未签名）——只验证工程能在 macOS + Xcode 上编过。
+# 签名与上传 App Store Connect 需 Francis 注册 Apple Developer（$99/年）后，
+# 再加证书/Provisioning Profile（或 App Store Connect API key）接上。
+name: iOS build (unsigned)
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Copy web files into www/ and sync to iOS project
+        run: |
+          npm run sync-web
+          npx cap sync ios
+
+      - name: Archive (unsigned)
+        run: |
+          cd ios/App
+          xcodebuild -project App.xcodeproj -scheme App \
+            -configuration Release -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            archive -archivePath build/App.xcarchive
+
+      - name: Package unsigned .ipa
+        run: |
+          cd ios/App
+          mkdir -p Payload
+          cp -r build/App.xcarchive/Products/Applications/App.app Payload/
+          zip -r App-unsigned.ipa Payload
+          ls -la App-unsigned.ipa
+
+      - name: Upload unsigned .ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: haitianxuexian-unsigned-ipa
+          path: ios/App/App-unsigned.ipa
+          if-no-files-found: error
